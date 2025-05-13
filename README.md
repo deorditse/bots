@@ -34,3 +34,6 @@ sudo docker compose up -d
 
 пересобрать только один, например n8n-alliance:
 sudo docker compose up -d --build n8n-alliance
+
+Логи
+sudo docker logs n8n-alliance
