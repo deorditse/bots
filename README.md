@@ -39,6 +39,14 @@ sudo docker compose up -d --build n8n-alliance
 sudo docker logs n8n-alliance
 
 
+## разрешения
+
+sudo chown -R 1000:1000 ./bots/alliance_trucks/data
+sudo chown -R 1000:1000 ./bots/test/data
+sudo chmod -R u+rwX ./bots/alliance_trucks/data
+sudo chmod -R u+rwX ./bots/test/data
+
+
 ## Step 3: Setting up SSL with Certbot
 
 Certbot will obtain and install an SSL certificate from Let's Encrypt.
