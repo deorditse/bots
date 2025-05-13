@@ -17,4 +17,23 @@ echo \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
 ```
+
+
+Сборка контейнеров
+
+🛠 Пересобрать и перезапустить все сервисы:
+sudo docker compose up -d --build
+
+перезапустить все контейнеры
+sudo docker compose down
+sudo docker compose up -d
+
+пересобрать только один, например n8n-alliance:
+sudo docker compose up -d --build n8n-alliance
+
+Логи
+sudo docker logs n8n-alliance
