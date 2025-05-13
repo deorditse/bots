@@ -3,10 +3,6 @@ version: "3.8"
 networks:
     n8n:
 
-volumes:
-    n8n_data:
-    nginx:
-
 services:
     nginx:
         image: nginx:latest
