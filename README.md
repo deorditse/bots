@@ -1,5 +1,5 @@
-Youtube Video Explanation: https://www.youtube.com/watch?v=Temh_Ddxp24
-![Screenshot 2024-08-03 125607](https://github.com/user-attachments/assets/908eaaf2-d66f-446e-8dd8-a3676da2bc89)
+https://github.com/user-attachments/assets/908eaaf2-d66f-446e-8dd8-a3676da2bc89
+https://www.youtube.com/watch?v=BmZ50gHTLXw&list=WL&index=5&ab_channel=%D0%9A%D0%BE%D0%BD%D1%81%D1%82%D0%B0%D0%BD%D1%82%D0%B8%D0%BD
 
 
 Step 1: Installing Docker
