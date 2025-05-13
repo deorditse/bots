@@ -1,0 +1,480 @@
+{
+  "name": "Чат-max",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "=🚛 Добро пожаловать в Alliance Trucks! Официальный дилер грузовых автомобилей. Какой у вас впорос?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -480,
+        -100
+      ],
+      "id": "6eac3d55-6421-4100-8e00-7b38a8bc66c8",
+      "name": "When chat message received",
+      "webhookId": "a35416e1-5689-4590-84f1-42cc3a7cc968"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "options": {
+          "systemMessage": "={{ $json.prompt }}\n\nuse database: {{ $json.database }}\n\nAlways answer in Russian. "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        700,
+        -80
+      ],
+      "id": "b7444a9f-203a-48a3-9825-4b59aaaf7232",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        600,
+        140
+      ],
+      "id": "584fdff5-e24f-421d-8c5c-a4a74baf5810",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "5GDSfwEBdS7D7oN1",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When chat message received').item.json.sessionId }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        760,
+        140
+      ],
+      "id": "9e2d43f9-803b-40e3-8440-1b59d386e4e4",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1420,
+        60
+      ],
+      "id": "db7b686b-46af-4f0a-bb5d-3e037685216e",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "5GDSfwEBdS7D7oN1",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1420,
+        280
+      ],
+      "id": "33c24a0d-8585-488c-971c-a9e700cd3572",
+      "name": "Embeddings OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "5GDSfwEBdS7D7oN1",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.chatInput }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "About the company",
+              "description": "Information about the company, everything related to sales and customer consultation on products"
+            },
+            {
+              "category": "Products in stock",
+              "description": "Detailed information on prices, availability in stock and specific products"
+            }
+          ]
+        },
+        "options": {
+          "fallback": "other"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        -100
+      ],
+      "id": "26178a9c-3cf0-40b9-87d0-0d422ef41594",
+      "name": "Text Classifier",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-nano"
+        },
+        "options": {
+          "responseFormat": "text"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -100,
+        0
+      ],
+      "id": "2f39de9d-ec49-4431-b9b1-4f82e3d3a23c",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "5GDSfwEBdS7D7oN1",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7a0a1479-07a3-4bfd-b341-236dfefbf12b",
+              "name": "text",
+              "value": "={{ $('Text Classifier').item.json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "8cc49fbc-6142-431c-b74d-273f7e35681e",
+              "name": "prompt",
+              "value": "={{ $json.prompt }}",
+              "type": "string"
+            },
+            {
+              "id": "a48103fc-9298-4e15-8fba-1d8f9816435d",
+              "name": "database",
+              "value": "={{ $json.database }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        460,
+        -80
+      ],
+      "id": "79feb2a3-17fd-43fa-985d-535a14e6ee02",
+      "name": "chat"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        940,
+        140
+      ],
+      "id": "2a10e186-150d-4729-b349-6991c08aacfc",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n\"prompt\": \"You are an intelligent assistant working for a company.\\nYour role is to provide clear, accurate, and professional answers strictly based on the company’s internal knowledge base.\\nYou must focus on product details, customer consultation, and sales support.\\n\\n📌 Rules and Behavior:\\n\\t1.\\tOnly use information from the internal knowledge base. Never guess or invent data.\\n\\t2.\\tIf a user asks something not in the knowledge base, respond:\\n“Sorry, I don’t have this information at the moment. I can forward your request to the sales team.”\\n\\t3.\\tKeep your answers concise, structured, and helpful. Use bullet points or numbered lists when necessary.\\n\\t4.\\tBe friendly but professional, like a trained sales consultant.\\n\\t5.\\tAvoid vague answers. If information is missing, offer to connect with a real representative.\\n\\n🎯 Your goals are:\\n\\t•\\tAnswer product-related questions (features, pricing, availability)\\n\\t•\\tHelp users choose the right product based on their needs\\n\\t•\\tProvide sales and order information\\n\\t•\\tGuide users through services, delivery, and support\\n\\t•\\tAccept applications, inquiries, and callback requests\",\n\"database\": \"products\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        180,
+        80
+      ],
+      "id": "1043d8c8-a7e9-4b65-aaf1-e093c5c27a12",
+      "name": "Товары и сток"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "company",
+        "toolDescription": "Your name is company database. Retrieve information about alliance trucks",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "company",
+          "mode": "list",
+          "cachedResultName": "company"
+        },
+        "topK": 20,
+        "options": {
+          "pineconeNamespace": "company"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.1,
+      "position": [
+        1240,
+        -20
+      ],
+      "id": "91862dbe-de5a-4eba-ba31-354a59137610",
+      "name": "company Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "CA12Tfen4KLhWCo4",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "products",
+        "toolDescription": "Your name is products database. Retrieve information about alliance trucks",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "products",
+          "mode": "list",
+          "cachedResultName": "products"
+        },
+        "topK": 20,
+        "options": {
+          "pineconeNamespace": "products"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.1,
+      "position": [
+        1260,
+        200
+      ],
+      "id": "15453cf9-784c-493d-982f-4f0ee2b3ed4b",
+      "name": "products Vector Store1",
+      "credentials": {
+        "pineconeApi": {
+          "id": "CA12Tfen4KLhWCo4",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"prompt\": \"You are an intelligent assistant working for a company.\\nYour role is to provide clear, accurate, and professional answers strictly based on the company’s internal knowledge base.\\nYou must focus on company information, product details, customer consultation, and sales support.\\n\\n📌 Rules and Behavior:\\n1. Only use information from the internal knowledge base. Never guess or invent data.\\n2. If a user asks something not in the knowledge base, respond: \\\"Sorry, I don’t have this information at the moment. I can forward your request to the sales team.\\\"\\n3. Keep your answers concise, structured, and helpful. Use bullet points or numbered lists when necessary.\\n4. Be friendly but professional, like a trained sales consultant.\\n5. Avoid vague answers. If information is missing, offer to connect with a real representative.\\n\\n🎯 Your goals are:\\n• Provide accurate information about the company (mission, values, history, contact details, etc.)\\n• Answer product-related questions (features, pricing, availability)\\n• Help users choose the right product based on their needs\\n• Provide sales and order information\\n• Guide users through services, delivery, and support\\n• Accept applications, inquiries, and callback requests\",\n\"database\": \"company\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        180,
+        -300
+      ],
+      "id": "3fb161d2-c32a-4efe-9085-8e1f5d12d22b",
+      "name": "О компании + скрипты"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "company Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "products Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "О компании + скрипты",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Товары и сток",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "О компании + скрипты",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "chat": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Товары и сток": {
+      "main": [
+        [
+          {
+            "node": "chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "company Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "products Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "О компании + скрипты": {
+      "main": [
+        [
+          {
+            "node": "chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e60c0bbf-5a34-4581-bef9-954202cfc99a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a442f3940d394a628991c7e2a22efb6a1f68221a3985f9fcb19ead0febaa9738"
+  },
+  "id": "mMIFvydyfQ1OSkXP",
+  "tags": []
+}
