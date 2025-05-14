@@ -59,10 +59,10 @@ services:
             - WEBHOOK_URL=https://deorbot.ru/test/
             - N8N_BASIC_AUTH_ACTIVE=true
             - N8N_PORT=5678
-            - N8N_PATH=/alliance/
-            - N8N_ENDPOINT_WEBHOOK=/alliance/webhook
+            - N8N_PATH=/test/
+            - N8N_ENDPOINT_WEBHOOK=/test/webhook
             - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=false
-            - N8N_ENDPOINT_WEBHOOK_TEST=/alliance/webhook-test
+            - N8N_ENDPOINT_WEBHOOK_TEST=/test/webhook-test
             - N8N_SECURE_COOKIE=false
 
         volumes:
