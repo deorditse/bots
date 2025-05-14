@@ -58,7 +58,7 @@ services:
             - N8N_HOST=deorbot.ru
             - WEBHOOK_URL=https://deorbot.ru/test/
             - N8N_BASIC_AUTH_ACTIVE=true
-            - N8N_PORT=5678
+            - N8N_PORT=5679
             - N8N_PATH=/test/
             - N8N_ENDPOINT_WEBHOOK=/test/webhook
             - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=false
