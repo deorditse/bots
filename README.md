@@ -58,18 +58,8 @@ sudo chmod -R u+rwX ./bots/test/data
 
 Certbot will obtain and install an SSL certificate from Let's Encrypt.
 
-1. **Install Certbot and the Nginx Plugin:**
+docker-compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --dry-run -d deorbot.ru
 
-    ```bash
-    sudo apt install certbot python3-certbot-nginx
-
-    ```
-
-2. **Obtain an SSL Certificate:**
-    ```bash
-    sudo certbot --nginx -d your-domain.com
-    // If you have a subdomain then it will be subdomain.your-domain.com
-    ```
 
 Follow the on-screen instructions to complete the SSL setup.
 Once completed, n8n will be accessible securely over HTTPS at your-domain.com.
