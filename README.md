@@ -25,6 +25,8 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 
 ## Сборка контейнеров
 
+sudo docker ps
+
 ### Пересобрать и перезапустить все сервисы:
 
 sudo docker compose up -d --build
