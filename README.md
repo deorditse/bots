@@ -58,7 +58,9 @@ sudo chmod -R u+rwX ./bots/test/data
 
 Certbot will obtain and install an SSL certificate from Let's Encrypt.
 
-sudo docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --dry-run -d deorbot.ru
+sudo docker compose run --rm certbot certonly \
+  --webroot --webroot-path /var/www/certbot/ \
+  -d deorbot.ru
 
 
 Follow the on-screen instructions to complete the SSL setup.
