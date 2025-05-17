@@ -37,6 +37,7 @@ sudo docker compose down
 sudo docker compose up -d
 
 ### пересобрать только один, например n8n-alliance:
+sudo docker compose restart nginx
 
 sudo docker compose up -d --build n8n-alliance
 
