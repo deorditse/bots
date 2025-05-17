@@ -1,72 +1,71 @@
 version: "3.8"
 
 networks:
-    n8n:
+  n8n:
 
 services:
-    nginx:
-        container_name: nginx
-        image: nginx:latest
-        ports:
-            - "80:80"
-            - "443:443"
-        volumes:
-            - ./nginx.conf:/etc/nginx/nginx.conf:ro
-            - ./certbot/conf/:/etc/letsencrypt/:ro
-            - ./certbot/www/:/var/www/certbot/:ro
-            # - ./sites:/etc/nginx/sites:ro
-        depends_on:
-            - n8n-alliance
-            - n8n-test
-        networks:
-            - n8n
-    certbot:
-        image: certbot/certbot:latest
-        command: >
-            sh -c "trap exit TERM; while :; do
-            certbot renew --webroot -w /var/www/certbot &&
-            echo 'Renewed. Reloading nginx...' &&
-            docker exec bots-nginx-1 nginx -s reload || echo 'Failed to reload nginx';
-            sleep 12h & wait $${!};
-            done"
-        volumes:
-            - ./certbot/conf/:/etc/letsencrypt/:rw
-            - ./certbot/www/:/var/www/certbot/:rw
-    n8n-alliance:
-        container_name: n8n-alliance
-        image: docker.n8n.io/n8nio/n8n
-        environment:
-            - N8N_HOST=deorbot.ru
-            - WEBHOOK_URL=https://deorbot.ru/alliance/
-            - N8N_BASIC_AUTH_ACTIVE=true
-            - N8N_PORT=5678
-            - N8N_PATH=/alliance/
-            - N8N_ENDPOINT_WEBHOOK=webhook
-            - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=false
-            - N8N_ENDPOINT_WEBHOOK_TEST=webhook-test
-            - N8N_SECURE_COOKIE=false
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certbot/conf/:/etc/letsencrypt/:ro
+      - ./certbot/www/:/var/www/certbot/:ro
+      # - ./sites:/etc/nginx/sites:ro
+    depends_on:
+      - n8n-alliance
+      - n8n-test
+    networks:
+      - n8n
+  certbot:
+    image: certbot/certbot:latest
+    command: >
+      sh -c "trap exit TERM; while :; do
+      certbot renew --webroot -w /var/www/certbot &&
+      echo 'Renewed. Reloading nginx...' &&
+      docker exec bots-nginx-1 nginx -s reload || echo 'Failed to reload nginx';
+      sleep 12h & wait $${!};
+      done"
+    volumes:
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+      - ./certbot/www/:/var/www/certbot/:rw
+  n8n-alliance:
+    container_name: n8n-alliance
+    image: docker.n8n.io/n8nio/n8n
+    environment:
+      - N8N_HOST=deorbot.ru
+      - WEBHOOK_URL=https://deorbot.ru/alliance/
+      - N8N_PORT=5678
+      - N8N_PATH=/alliance/
+      - N8N_ENDPOINT_WEBHOOK=webhook
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=false
+      - N8N_ENDPOINT_WEBHOOK_TEST=webhook-test
+      - N8N_SECURE_COOKIE=false
 
-        volumes:
-            - ./bots/alliance_trucks/data:/home/node/.n8n
-        restart: unless-stopped
-        networks:
-            - n8n
-    n8n-test:
-        container_name: n8n-test
-        image: docker.n8n.io/n8nio/n8n
-        environment:
-            - N8N_HOST=deorbot.ru
-            - WEBHOOK_URL=https://deorbot.ru/test/
-            - N8N_BASIC_AUTH_ACTIVE=true
-            - N8N_PORT=5679
-            - N8N_PATH=/test/
-            - N8N_ENDPOINT_WEBHOOK=webhook
-            - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=false
-            - N8N_ENDPOINT_WEBHOOK_TEST=webhook-test
-            - N8N_SECURE_COOKIE=false
+    volumes:
+      - ./bots/alliance_trucks/data:/home/node/.n8n
+    restart: unless-stopped
+    networks:
+      - n8n
+  n8n-test:
+    container_name: n8n-test
+    image: docker.n8n.io/n8nio/n8n
+    environment:
+      - N8N_HOST=deorbot.ru
+      - WEBHOOK_URL=https://deorbot.ru/test/
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_PORT=5678
+      - N8N_PATH=/test/
+      - N8N_ENDPOINT_WEBHOOK=/test/webhook
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=false
+      - N8N_ENDPOINT_WEBHOOK_TEST=/test/webhook-test
+      - N8N_SECURE_COOKIE=false
 
-        volumes:
-            - ./bots/test/data:/home/node/.n8n
-        restart: unless-stopped
-        networks:
-            - n8n
+    volumes:
+      - ./bots/test/data:/home/node/.n8n
+    restart: unless-stopped
+    networks:
+      - n8n

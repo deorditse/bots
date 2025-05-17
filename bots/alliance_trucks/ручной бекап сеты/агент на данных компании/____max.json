@@ -10,8 +10,8 @@
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
       "typeVersion": 1.1,
       "position": [
-        -480,
-        -100
+        -560,
+        -380
       ],
       "id": "6eac3d55-6421-4100-8e00-7b38a8bc66c8",
       "name": "When chat message received",
@@ -22,14 +22,14 @@
         "promptType": "define",
         "text": "={{ $json.text }}",
         "options": {
-          "systemMessage": "={{ $json.prompt }}\n\nuse database: {{ $json.database }}\n\nAlways answer in Russian. "
+          "systemMessage": "={{ $json.prompt }}\n\nuse database: {{ $json.database }}\n\nyour name is Vasily, communicate in such a way that you cannot be distinguished from a human\n\nAlways answer in Russian. "
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.9,
       "position": [
-        700,
-        -80
+        940,
+        -100
       ],
       "id": "b7444a9f-203a-48a3-9825-4b59aaaf7232",
       "name": "AI Agent"
@@ -46,8 +46,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        600,
-        140
+        820,
+        120
       ],
       "id": "584fdff5-e24f-421d-8c5c-a4a74baf5810",
       "name": "OpenAI Chat Model",
@@ -60,28 +60,13 @@
     },
     {
       "parameters": {
-        "sessionIdType": "customKey",
-        "sessionKey": "={{ $('When chat message received').item.json.sessionId }}",
-        "contextWindowLength": 10
-      },
-      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
-      "typeVersion": 1.3,
-      "position": [
-        760,
-        140
-      ],
-      "id": "9e2d43f9-803b-40e3-8440-1b59d386e4e4",
-      "name": "Simple Memory"
-    },
-    {
-      "parameters": {
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "typeVersion": 1.2,
       "position": [
-        1420,
-        60
+        1720,
+        320
       ],
       "id": "db7b686b-46af-4f0a-bb5d-3e037685216e",
       "name": "Embeddings OpenAI",
@@ -99,8 +84,8 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "typeVersion": 1.2,
       "position": [
-        1420,
-        280
+        1720,
+        540
       ],
       "id": "33c24a0d-8585-488c-971c-a9e700cd3572",
       "name": "Embeddings OpenAI1",
@@ -113,7 +98,7 @@
     },
     {
       "parameters": {
-        "inputText": "={{ $json.chatInput }}",
+        "inputText": "={{ $json.text }}",
         "categories": {
           "categories": [
             {
@@ -133,7 +118,7 @@
       "type": "@n8n/n8n-nodes-langchain.textClassifier",
       "typeVersion": 1,
       "position": [
-        -280,
+        -60,
         -100
       ],
       "id": "26178a9c-3cf0-40b9-87d0-0d422ef41594",
@@ -155,7 +140,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        -100,
+        120,
         0
       ],
       "id": "2f39de9d-ec49-4431-b9b1-4f82e3d3a23c",
@@ -174,7 +159,7 @@
             {
               "id": "7a0a1479-07a3-4bfd-b341-236dfefbf12b",
               "name": "text",
-              "value": "={{ $('Text Classifier').item.json.chatInput }}",
+              "value": "={{ $('Text Classifier').item.json.text }}",
               "type": "string"
             },
             {
@@ -191,13 +176,14 @@
             }
           ]
         },
+        "includeOtherFields": true,
         "options": {}
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        460,
-        -80
+        520,
+        -100
       ],
       "id": "79feb2a3-17fd-43fa-985d-535a14e6ee02",
       "name": "chat"
@@ -207,8 +193,8 @@
       "type": "@n8n/n8n-nodes-langchain.toolThink",
       "typeVersion": 1,
       "position": [
-        940,
-        140
+        1500,
+        -20
       ],
       "id": "2a10e186-150d-4729-b349-6991c08aacfc",
       "name": "Think"
@@ -217,12 +203,13 @@
       "parameters": {
         "mode": "raw",
         "jsonOutput": "{\n\"prompt\": \"You are an intelligent assistant working for a company.\\nYour role is to provide clear, accurate, and professional answers strictly based on the company’s internal knowledge base.\\nYou must focus on product details, customer consultation, and sales support.\\n\\n📌 Rules and Behavior:\\n\\t1.\\tOnly use information from the internal knowledge base. Never guess or invent data.\\n\\t2.\\tIf a user asks something not in the knowledge base, respond:\\n“Sorry, I don’t have this information at the moment. I can forward your request to the sales team.”\\n\\t3.\\tKeep your answers concise, structured, and helpful. Use bullet points or numbered lists when necessary.\\n\\t4.\\tBe friendly but professional, like a trained sales consultant.\\n\\t5.\\tAvoid vague answers. If information is missing, offer to connect with a real representative.\\n\\n🎯 Your goals are:\\n\\t•\\tAnswer product-related questions (features, pricing, availability)\\n\\t•\\tHelp users choose the right product based on their needs\\n\\t•\\tProvide sales and order information\\n\\t•\\tGuide users through services, delivery, and support\\n\\t•\\tAccept applications, inquiries, and callback requests\",\n\"database\": \"products\"\n}\n",
+        "includeOtherFields": true,
         "options": {}
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        180,
+        320,
         80
       ],
       "id": "1043d8c8-a7e9-4b65-aaf1-e093c5c27a12",
@@ -247,8 +234,8 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
       "typeVersion": 1.1,
       "position": [
-        1240,
-        -20
+        1540,
+        240
       ],
       "id": "91862dbe-de5a-4eba-ba31-354a59137610",
       "name": "company Vector Store",
@@ -278,8 +265,8 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
       "typeVersion": 1.1,
       "position": [
-        1260,
-        200
+        1540,
+        460
       ],
       "id": "15453cf9-784c-493d-982f-4f0ee2b3ed4b",
       "name": "products Vector Store1",
@@ -294,16 +281,314 @@
       "parameters": {
         "mode": "raw",
         "jsonOutput": "{\n  \"prompt\": \"You are an intelligent assistant working for a company.\\nYour role is to provide clear, accurate, and professional answers strictly based on the company’s internal knowledge base.\\nYou must focus on company information, product details, customer consultation, and sales support.\\n\\n📌 Rules and Behavior:\\n1. Only use information from the internal knowledge base. Never guess or invent data.\\n2. If a user asks something not in the knowledge base, respond: \\\"Sorry, I don’t have this information at the moment. I can forward your request to the sales team.\\\"\\n3. Keep your answers concise, structured, and helpful. Use bullet points or numbered lists when necessary.\\n4. Be friendly but professional, like a trained sales consultant.\\n5. Avoid vague answers. If information is missing, offer to connect with a real representative.\\n\\n🎯 Your goals are:\\n• Provide accurate information about the company (mission, values, history, contact details, etc.)\\n• Answer product-related questions (features, pricing, availability)\\n• Help users choose the right product based on their needs\\n• Provide sales and order information\\n• Guide users through services, delivery, and support\\n• Accept applications, inquiries, and callback requests\",\n\"database\": \"company\"\n}\n",
+        "includeOtherFields": true,
         "options": {}
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        180,
+        320,
         -300
       ],
       "id": "3fb161d2-c32a-4efe-9085-8e1f5d12d22b",
       "name": "О компании + скрипты"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1440,
+        160
+      ],
+      "id": "21a3e1f9-3b35-4b28-a572-fe313d3a5c63",
+      "name": "Telegram Trigger",
+      "webhookId": "c0a877eb-f58d-4d1f-a6f8-ef09380d530b",
+      "credentials": {
+        "telegramApi": {
+          "id": "PJ6fEOJcpLUhmldR",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Telegram Trigger').item.json.message.text }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "48bd56cd-ebad-41a6-98a0-f809d0b4b2f9"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5f257fc8-e6e9-4d3c-86ac-64f26c67c634",
+                    "leftValue": "={{ $('Telegram Trigger').item.json.message.voice.file_id }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "voice"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -1020,
+        160
+      ],
+      "id": "398e35fd-3cec-42e0-8c87-b192ec001ce3",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Telegram Trigger').item.json.message.voice.file_id }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -840,
+        280
+      ],
+      "id": "46bbcbf6-fa8b-46ae-a6dc-746460d0c786",
+      "name": "Telegram",
+      "webhookId": "156ec6e9-14b1-499a-8b1e-5badec1db176",
+      "credentials": {
+        "telegramApi": {
+          "id": "PJ6fEOJcpLUhmldR",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -700,
+        280
+      ],
+      "id": "71180528-fc49-44e4-b3ab-a89b97c1389b",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "5GDSfwEBdS7D7oN1",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Сессия').item.json.chat_id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1540,
+        -1060
+      ],
+      "id": "1a02a2a4-0f8c-4bf5-bb2e-f25a9510e24f",
+      "name": "Telegram1",
+      "webhookId": "909d2acc-3aba-4855-be32-0a8ba2869d0c",
+      "credentials": {
+        "telegramApi": {
+          "id": "PJ6fEOJcpLUhmldR",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e459fbd3-47be-41f2-b770-de974e692b93",
+              "name": "chat_id",
+              "value": "={{ $json.sessionId }}{{ $('Telegram Trigger').item.json.message.chat.id }}",
+              "type": "string"
+            },
+            {
+              "id": "2d70e0c1-ceb0-49e0-966b-f08640e5ec4d",
+              "name": "text",
+              "value": "={{ $json.chatInput }}{{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "32143ee7-26bd-4ea4-9661-1c7719635903",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -380,
+        -100
+      ],
+      "id": "a3dd6682-ce9a-48f2-a94e-27e60595666d",
+      "name": "Сессия"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1575616-b238-4906-a6b9-509a520515e5",
+              "name": "text",
+              "value": "={{ $('Telegram Trigger').item.json.message.text }}{{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -540,
+        140
+      ],
+      "id": "38b4899e-38cf-4317-a05d-2ea59577b0dc",
+      "name": "text"
+    },
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $json.message.chat.id }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1220,
+        160
+      ],
+      "id": "ee15f74f-e5d0-4150-8cd7-ba18052ecd47",
+      "name": "action",
+      "webhookId": "7aab84c8-66f6-42bf-a6e0-0776ebf5f2a9",
+      "credentials": {
+        "telegramApi": {
+          "id": "PJ6fEOJcpLUhmldR",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Сессия').item.json.chat_id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        980,
+        120
+      ],
+      "id": "0dcd3b82-f100-414b-82df-17f5c4eb94d0",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "content": "## Trigger IN\n",
+        "height": 900,
+        "width": 1240
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1500,
+        -440
+      ],
+      "id": "b4093683-2354-49d3-8697-efb7a0124e8d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Prompt classificator",
+        "height": 1220,
+        "width": 760,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -640
+      ],
+      "id": "2c5a95fc-7358-43fc-b478-2254117ec9d3",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Database",
+        "height": 660,
+        "width": 380,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1520,
+        100
+      ],
+      "id": "b753210f-4455-4e0d-8b93-e467831f4aa0",
+      "name": "Sticky Note2"
     }
   ],
   "pinData": {},
@@ -312,7 +597,7 @@
       "main": [
         [
           {
-            "node": "Text Classifier",
+            "node": "Сессия",
             "type": "main",
             "index": 0
           }
@@ -325,17 +610,6 @@
           {
             "node": "AI Agent",
             "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Simple Memory": {
-      "ai_memory": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_memory",
             "index": 0
           }
         ]
@@ -464,13 +738,119 @@
           }
         ]
       ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "text",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Сессия": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "text": {
+      "main": [
+        [
+          {
+            "node": "Сессия",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "action": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "e60c0bbf-5a34-4581-bef9-954202cfc99a",
+  "versionId": "870d85df-6b07-4ec7-a0b8-ef8195d3a65d",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "a442f3940d394a628991c7e2a22efb6a1f68221a3985f9fcb19ead0febaa9738"
